@@ -3,7 +3,7 @@ package com.example.demo.document.serivce;
 import com.aspose.words.Document;
 import com.aspose.words.HtmlLoadOptions;
 import com.aspose.words.SaveFormat;
-import com.example.demo.document.web.RegularDocumentDataForm;
+import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;

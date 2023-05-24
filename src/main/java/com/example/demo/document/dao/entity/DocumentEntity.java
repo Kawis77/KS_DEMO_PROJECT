@@ -2,6 +2,7 @@ package com.example.demo.document.dao.entity;
 
 
 import com.example.demo.employer.dao.entity.EmployerEntity;
+import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import jakarta.persistence.*;
 
 import java.io.File;
@@ -22,11 +23,15 @@ public class DocumentEntity {
     private Integer version;
     private Date createDate;
 
-    private String type;
+    private Integer type;
 
     private String publicationNote;
 
-    private String location;
+    @ManyToOne
+    @JoinColumn(name = "menu_component_id")
+    private MenuDocumentComponentEntity location;
+
+    private String category;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
@@ -36,7 +41,7 @@ public class DocumentEntity {
     public DocumentEntity() {
     }
 
-    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, String type, String publicationNote, String location, File file, EmployerEntity author) {
+    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, EmployerEntity author) {
         this.id = id;
         this.path = path;
         this.title = title;
@@ -46,6 +51,7 @@ public class DocumentEntity {
         this.type = type;
         this.publicationNote = publicationNote;
         this.location = location;
+        this.category = category;
         this.author = author;
     }
 
@@ -97,12 +103,20 @@ public class DocumentEntity {
         this.createDate = createDate;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getPublicationNote() {
@@ -113,11 +127,11 @@ public class DocumentEntity {
         this.publicationNote = publicationNote;
     }
 
-    public String getLocation() {
+    public MenuDocumentComponentEntity getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(MenuDocumentComponentEntity location) {
         this.location = location;
     }
 
