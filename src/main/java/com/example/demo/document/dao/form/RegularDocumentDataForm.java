@@ -1,7 +1,5 @@
-package com.example.demo.document.web;
+package com.example.demo.document.dao.form;
 
-
-import java.sql.Date;
 
 public class RegularDocumentDataForm {
 
@@ -9,7 +7,7 @@ public class RegularDocumentDataForm {
     private String author;
     private String createDate;
     private String location;
-    private String type;
+    private String category;
     private String version;
     private String publicationNote;
     private String content;
@@ -47,12 +45,12 @@ public class RegularDocumentDataForm {
         this.location = location;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getVersion() {
