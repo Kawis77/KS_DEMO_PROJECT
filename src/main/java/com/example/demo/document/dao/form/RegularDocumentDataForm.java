@@ -4,6 +4,7 @@ package com.example.demo.document.dao.form;
 public class RegularDocumentDataForm {
 
     private String title;
+    private String owner;
     private String author;
     private String createDate;
     private String location;
@@ -11,6 +12,7 @@ public class RegularDocumentDataForm {
     private String version;
     private String publicationNote;
     private String content;
+
 
 
     public String getTitle() {
@@ -21,12 +23,12 @@ public class RegularDocumentDataForm {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getCreateDate() {
@@ -75,6 +77,14 @@ public class RegularDocumentDataForm {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
 

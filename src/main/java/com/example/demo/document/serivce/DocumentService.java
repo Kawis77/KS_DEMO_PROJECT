@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,6 +29,11 @@ public class DocumentService {
     public DocumentEntity edit(DocumentEntity aDocumentEntity) {
 
         return lDocumentRepository.save(aDocumentEntity);
+    }
+
+
+    public List<DocumentEntity> readAll(){
+       return lDocumentRepository.findAll();
     }
 
     public void delete(Long aId) {
