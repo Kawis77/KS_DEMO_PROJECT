@@ -40,15 +40,16 @@ public class MenuDocumentComponentController {
     }
 
 
-    @PostMapping("menu/component/create")
+    @PostMapping("/menu/component/create")
     public ResponseEntity<Object> createMenuDocumentComponent(@RequestBody MenuDocumentComponentForm menuDocumentComponentForm) {
 
         if (menuDocumentComponentForm != null) {
             MenuDocumentComponentEntity menuDocumentComponent = new MenuDocumentComponentEntity();
-            menuDocumentComponent.setName(menuDocumentComponent.getName());
-            menuDocumentComponent.setDescription(menuDocumentComponent.getDescription());
+            menuDocumentComponent.setName(menuDocumentComponentForm.getName());
+            menuDocumentComponent.setDescription(menuDocumentComponentForm.getDescription());
 
-            return ResponseEntity.ok().build();
+                menuDocumentComponentService.create(menuDocumentComponent);
+                return ResponseEntity.ok().build();
 
         } else {
             log.debug("Is not possible to create a new MenuDocumentComponent");

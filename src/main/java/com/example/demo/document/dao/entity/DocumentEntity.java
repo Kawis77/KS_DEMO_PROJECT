@@ -5,7 +5,6 @@ import com.example.demo.employer.dao.entity.EmployerEntity;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import jakarta.persistence.*;
 
-import java.io.File;
 import java.util.Date;
 
 @Entity
@@ -35,13 +34,14 @@ public class DocumentEntity {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private EmployerEntity author;
+    private EmployerEntity owner;
+
 
 
     public DocumentEntity() {
     }
 
-    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, EmployerEntity author) {
+    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, EmployerEntity owner ) {
         this.id = id;
         this.path = path;
         this.title = title;
@@ -52,7 +52,8 @@ public class DocumentEntity {
         this.publicationNote = publicationNote;
         this.location = location;
         this.category = category;
-        this.author = author;
+        this.owner = owner;
+
     }
 
     public Long getId() {
@@ -135,11 +136,11 @@ public class DocumentEntity {
         this.location = location;
     }
 
-    public EmployerEntity getAuthor() {
-        return author;
+    public EmployerEntity getOwner() {
+        return owner;
     }
 
-    public void setAuthor(EmployerEntity author) {
-        this.author = author;
+    public void setOwner(EmployerEntity owner) {
+        this.owner = owner;
     }
 }
