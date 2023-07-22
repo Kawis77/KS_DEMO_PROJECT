@@ -11,12 +11,12 @@ public class HomeController {
 
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/home")
+    @GetMapping("/")
     @ResponseBody
 
     public String homeAction(Model model){
          System.out.println("test test");
-        return "index";
+        return "Success";
 
     }
 }
