@@ -1,9 +1,7 @@
 package com.example.demo.menucomponent.dao.entity;
 
-import com.example.demo.document.dao.entity.DocumentEntity;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
-import java.util.List;
 
 @Entity
 @Table(name = "MenuDocumentComponent")

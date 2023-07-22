@@ -1,7 +1,6 @@
 package com.example.demo.users.dao.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user")

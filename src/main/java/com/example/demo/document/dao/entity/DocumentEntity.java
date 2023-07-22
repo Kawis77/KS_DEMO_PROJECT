@@ -3,8 +3,7 @@ package com.example.demo.document.dao.entity;
 
 import com.example.demo.employer.dao.entity.EmployerEntity;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity

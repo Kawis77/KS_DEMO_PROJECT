@@ -4,8 +4,8 @@ import com.example.demo.users.dao.entity.UserEntity;
 import com.example.demo.users.service.UserManagerService;
 import com.example.demo.users.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,16 +19,19 @@ public class RegistrationController {
         this.userMenagerService = userMenagerService;
     }
 
-    @GetMapping("/register")
-    public String prepareRegistration(Model model) {
-        model.addAttribute("user", new UserEntity());
-        return "registration";
 
+    @GetMapping("/test")
+    public String testMethode() {
+        System.out.println("jak sie masz");
+        return "jak sie masz?";
     }
 
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String proccesRegistriation(UserEntity userEntity) {
+        userEntity.setPassword("admin");
+        userEntity.setUsername("admin");
+        userEntity.setRole("USER");
         userMenagerService.registerUser(userEntity);
-        return "redirect:/login";
+        return "Success";
     }
 }

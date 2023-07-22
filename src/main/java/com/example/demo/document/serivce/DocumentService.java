@@ -1,7 +1,6 @@
 package com.example.demo.document.serivce;
 import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.dao.repository.DocumentRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -44,7 +43,7 @@ public class DocumentService {
             DocumentEntity lDocumentEntity = lOptionalDocumentEntity.get();
             lDocumentRepository.delete(lDocumentEntity);
         } else {
-            throw new EntityNotFoundException("Document not found");
+
         }
 
     }
