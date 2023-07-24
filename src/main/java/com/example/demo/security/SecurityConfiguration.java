@@ -3,6 +3,7 @@ package com.example.demo.security;
 import com.example.demo.users.service.CustomDetailUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,11 +46,18 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
        http.authorizeRequests()
                 .antMatchers("/api/user/register").permitAll()
                 .antMatchers("/**").permitAll()
-               .antMatchers("/api/user/test").permitAll()
+                .antMatchers("/api/user/test").permitAll()
                 .antMatchers("/users/").permitAll()
+               .antMatchers(HttpMethod.GET,
+               "/index*", "/static/**", "/*.js", "/*.json", "/*.ico")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .logout().logoutSuccessUrl("/login")
+                .formLogin()
+               .loginPage("/api/security/customlogin")
+                .loginProcessingUrl("/api/security/customlogin").permitAll()
+                .and()
+                .logout().logoutSuccessUrl("/api/security/customlogin")
                 .and()
                 .csrf()
                 .disable();
@@ -59,7 +67,7 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         configuration.setAllowCredentials(true);
