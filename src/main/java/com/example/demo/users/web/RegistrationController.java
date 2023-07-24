@@ -29,7 +29,7 @@ public class RegistrationController {
     @GetMapping("/register")
     public String proccesRegistriation(UserEntity userEntity) {
         userEntity.setPassword("admin");
-        userEntity.setUsername("admin");
+        userEntity.setUsername("dwadwa");
         userEntity.setRole("USER");
         userMenagerService.registerUser(userEntity);
         return "Success";

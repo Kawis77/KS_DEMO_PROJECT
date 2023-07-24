@@ -32,7 +32,10 @@ public class LoginController {
             UserDetails user = customDetailUserService.loadUserByUsername(loginRequest.getUsername());
             if (user != null) {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-                if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword() )) {
+
+                String bCryptPassword = user.getPassword().replaceAll("\\{.*?}", "");
+
+                if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), bCryptPassword )) {
                     String token = loginService.generateJwtToken(loginRequest.getUsername());
                     return ResponseEntity.ok(token);
                 } else {
