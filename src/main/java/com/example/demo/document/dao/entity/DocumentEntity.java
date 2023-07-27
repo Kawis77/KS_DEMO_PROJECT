@@ -1,8 +1,8 @@
 package com.example.demo.document.dao.entity;
 
-
-import com.example.demo.employer.dao.entity.EmployerEntity;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
+import com.example.demo.users.dao.entity.UserEntity;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -32,15 +32,14 @@ public class DocumentEntity {
     private String category;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private EmployerEntity owner;
-
+    @JoinColumn(name = "user_id")
+    private UserEntity owner;
 
 
     public DocumentEntity() {
     }
 
-    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, EmployerEntity owner ) {
+    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, UserEntity owner ) {
         this.id = id;
         this.path = path;
         this.title = title;
@@ -135,11 +134,11 @@ public class DocumentEntity {
         this.location = location;
     }
 
-    public EmployerEntity getOwner() {
+    public UserEntity getOwner() {
         return owner;
     }
 
-    public void setOwner(EmployerEntity owner) {
+    public void setOwner(UserEntity owner) {
         this.owner = owner;
     }
 }
