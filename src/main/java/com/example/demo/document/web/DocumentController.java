@@ -5,6 +5,8 @@ import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.serivce.DocumentService;
 import com.example.demo.document.serivce.RegularDocumentService;
+import com.example.demo.users.dao.entity.UserEntity;
+import com.example.demo.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/api")
 @RestController
@@ -21,8 +24,11 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @Autowired
-
     private final RegularDocumentService regularDocumentService;
+
+    @Autowired
+    private UserService userService;
+
 
     public DocumentController(DocumentService documentService, RegularDocumentService regularDocumentService) {
         this.documentService = documentService;
@@ -35,13 +41,21 @@ public class DocumentController {
 
         DocumentEntity document = new DocumentEntity();
         document.setTitle(documentData.getTitle());
-        document.setOwner(null);
+
+        if (documentData.getOwner() != null){
+            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+            if (userEntity != null){
+                document.setOwner(userEntity);
+            }
+        }
         if (file != null) {
             document.setPath(file.getPath());
         }
         if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
             document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
         }
+
+        document.setVersion(document.getVersion());
         document.setCategory(documentData.getCategory());
         document.setPublicationNote(documentData.getPublicationNote());
         document.setType(DocumentConstants.REGULAR_DOC_DOCUMENT);
