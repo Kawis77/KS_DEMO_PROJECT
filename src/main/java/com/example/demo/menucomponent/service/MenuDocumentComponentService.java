@@ -58,7 +58,7 @@ public class MenuDocumentComponentService {
     }
 
 
-    public MenuDocumentComponentEntity readWithId(Long id) {
+    public MenuDocumentComponentEntity getMenuComponentById(Long id) {
         if (id != null) {
 
             Optional<MenuDocumentComponentEntity> optionalMenuDocumentComponent = documentComponentRepository.findById(id);
@@ -73,4 +73,5 @@ public class MenuDocumentComponentService {
         }
         return null;
     }
+
 }
