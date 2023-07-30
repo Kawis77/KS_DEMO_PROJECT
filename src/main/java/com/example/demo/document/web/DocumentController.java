@@ -5,6 +5,8 @@ import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.serivce.DocumentService;
 import com.example.demo.document.serivce.RegularDocumentService;
+import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
+import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import com.example.demo.users.dao.entity.UserEntity;
 import com.example.demo.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/api")
 @RestController
@@ -28,6 +29,9 @@ public class DocumentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MenuDocumentComponentService menuDocumentComponentService;
 
 
     public DocumentController(DocumentService documentService, RegularDocumentService regularDocumentService) {
@@ -53,6 +57,13 @@ public class DocumentController {
         }
         if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
             document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
+        }
+
+        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()){
+            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+            if (menuDocumentComponentEntity != null){
+                document.setLocation(menuDocumentComponentEntity);
+            }
         }
 
         document.setVersion(document.getVersion());

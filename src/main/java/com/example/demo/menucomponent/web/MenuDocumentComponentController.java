@@ -13,7 +13,7 @@ import java.util.List;
 
 @Log4j2
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/menu")
 public class MenuDocumentComponentController {
 
 
@@ -21,7 +21,7 @@ public class MenuDocumentComponentController {
     private MenuDocumentComponentService menuDocumentComponentService;
 
 
-    @GetMapping("/menu/component/all")
+    @GetMapping("/component/all")
     public ResponseEntity<List<MenuDocumentComponentEntity>> getAllMenuComponents() {
 
         List<MenuDocumentComponentEntity> menuDocumentComponentEntityList = menuDocumentComponentService.readAll();
@@ -37,7 +37,7 @@ public class MenuDocumentComponentController {
     }
 
 
-    @PostMapping("/menu/component/create")
+    @PostMapping("/component/create")
     public ResponseEntity<Object> createMenuDocumentComponent(@RequestBody MenuDocumentComponentForm menuDocumentComponentForm) {
 
         if (menuDocumentComponentForm != null) {
