@@ -1,7 +1,8 @@
-package com.example.demo.users.web;
+package com.example.demo.category.web;
 
+import com.example.demo.category.dao.entity.CategoryEntity;
+import com.example.demo.category.service.CategoryService;
 import com.example.demo.users.dao.entity.UserEntity;
-import com.example.demo.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,22 +13,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api/category/")
+public class CategoryController {
+
 
     @Autowired
-    UserService userService;
-
+    private CategoryService categoryService;
 
     @GetMapping("/read/all")
-    public ResponseEntity<List<UserEntity>> getAllUsers(){
+    public ResponseEntity<List<CategoryEntity>> getAllUsers(){
 
-        List<UserEntity> userEntityList = userService.readAll();
-
-        if (userEntityList != null) {
-            return new ResponseEntity<>(userEntityList, HttpStatus.OK);
+        List<CategoryEntity> categoryEntityList = categoryService.readAll();
+        if (categoryEntityList != null) {
+            return new ResponseEntity<>(categoryEntityList, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+
 }
