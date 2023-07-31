@@ -1,5 +1,6 @@
 package com.example.demo.document.dao.entity;
 
+import com.example.demo.category.dao.entity.CategoryEntity;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import com.example.demo.users.dao.entity.UserEntity;
 
@@ -29,7 +30,9 @@ public class DocumentEntity {
     @JoinColumn(name = "menu_component_id")
     private MenuDocumentComponentEntity location;
 
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity categoryEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,7 +42,7 @@ public class DocumentEntity {
     public DocumentEntity() {
     }
 
-    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, String category, UserEntity owner ) {
+    public DocumentEntity(Long id, String path, String title, String size, Integer version, Date createDate, Integer type, String publicationNote, MenuDocumentComponentEntity location, CategoryEntity category, UserEntity owner ) {
         this.id = id;
         this.path = path;
         this.title = title;
@@ -49,7 +52,7 @@ public class DocumentEntity {
         this.type = type;
         this.publicationNote = publicationNote;
         this.location = location;
-        this.category = category;
+        this.categoryEntity = category;
         this.owner = owner;
 
     }
@@ -110,12 +113,12 @@ public class DocumentEntity {
         this.type = type;
     }
 
-    public String getCategory() {
-        return category;
+    public CategoryEntity getCategoryEntity() {
+        return categoryEntity;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryEntity(CategoryEntity categoryEntity) {
+        this.categoryEntity = categoryEntity;
     }
 
     public String getPublicationNote() {

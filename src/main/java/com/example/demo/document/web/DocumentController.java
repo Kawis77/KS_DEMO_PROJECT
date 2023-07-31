@@ -1,5 +1,7 @@
 package com.example.demo.document.web;
 
+import com.example.demo.category.dao.entity.CategoryEntity;
+import com.example.demo.category.service.CategoryService;
 import com.example.demo.constans.DocumentConstants;
 import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.entity.DocumentEntity;
@@ -33,6 +35,9 @@ public class DocumentController {
     @Autowired
     private MenuDocumentComponentService menuDocumentComponentService;
 
+    @Autowired
+    private CategoryService categoryService;
+
 
     public DocumentController(DocumentService documentService, RegularDocumentService regularDocumentService) {
         this.documentService = documentService;
@@ -52,12 +57,6 @@ public class DocumentController {
                 document.setOwner(userEntity);
             }
         }
-        if (file != null) {
-            document.setPath(file.getPath());
-        }
-        if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
-            document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
-        }
 
         if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()){
             MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
@@ -66,8 +65,21 @@ public class DocumentController {
             }
         }
 
+        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()){
+            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+            if (categoryEntity != null){
+                document.setCategoryEntity(categoryEntity);
+            }
+        }
+
+        if (file != null) {
+            document.setPath(file.getPath());
+        }
+        if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
+            document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
+        }
+
         document.setVersion(document.getVersion());
-        document.setCategory(documentData.getCategory());
         document.setPublicationNote(documentData.getPublicationNote());
         document.setType(DocumentConstants.REGULAR_DOC_DOCUMENT);
 
