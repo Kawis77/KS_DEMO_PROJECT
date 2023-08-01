@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,22 @@ public class DocumentService {
         return sqlDate;
     }
 
+    public List<DocumentEntity> getAllWithMenuId(Long id){
 
+        List<DocumentEntity> menuDocuments = new ArrayList<>();
+        List<DocumentEntity> allDocuments = lDocumentRepository.findAll();
+        for (DocumentEntity document : allDocuments){
+            if (document.getLocation().getId() == id){
+                menuDocuments.add(document);
+            }
+        }
+        if (menuDocuments.size() > 0){
+            return menuDocuments;
+        }else {
+            log.error("Documents list with this menu id is empty ");
+            return menuDocuments;
+        }
+    }
 }
 
 

@@ -103,4 +103,21 @@ public class DocumentController {
 
     }
 
+    @GetMapping("/document/read/one/{id}")
+    @ResponseBody
+    public ResponseEntity<Object> readOneMenuDocuments(@PathVariable Long id) {
+
+        List<DocumentEntity> lList = documentService.getAllWithMenuId(id);
+
+        if (lList != null) {
+            return new ResponseEntity<>(lList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+
+
+
 }
