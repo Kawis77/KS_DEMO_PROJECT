@@ -13,6 +13,7 @@ import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import com.example.demo.users.dao.entity.UserEntity;
 import com.example.demo.users.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-@RequestMapping("/api")
+@Log4j2
+@RequestMapping("/api/document")
 @RestController
 public class DocumentController {
 
@@ -45,7 +47,7 @@ public class DocumentController {
         this.regularDocumentService = regularDocumentService;
     }
 
-    @PostMapping("/document/regular/create")
+    @PostMapping("/regular/create")
     public ResponseEntity<Object> createRegularDocument(@RequestBody RegularDocumentDataForm documentData) {
         File file = regularDocumentService.createRegularDocumentContent(documentData);
 
@@ -90,7 +92,7 @@ public class DocumentController {
     }
 
 
-    @PostMapping("/document/external/create")
+    @PostMapping("/external/create")
     public ResponseEntity<Object> createExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
 
         DocumentEntity document = new DocumentEntity();
@@ -133,7 +135,7 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/document/read/all")
+    @GetMapping("/read/all")
     @ResponseBody
     public ResponseEntity<Object> readAllDocuments() {
 
@@ -147,7 +149,7 @@ public class DocumentController {
 
     }
 
-    @GetMapping("/document/read/one/{id}")
+    @GetMapping("/read/menu/{id}")
     @ResponseBody
     public ResponseEntity<Object> readOneMenuDocuments(@PathVariable Long id) {
 
@@ -161,7 +163,17 @@ public class DocumentController {
 
     }
 
+    @GetMapping("/read/one/doc/{wid}")
+    public ResponseEntity<DocumentEntity> getOneDocument(@PathVariable("wid") Long id) {
+        if (id != null) {
 
-
+            DocumentEntity documentEntity = documentService.findDocumentById(id);
+            if (documentEntity != null) {
+                return new ResponseEntity<>(documentEntity, HttpStatus.OK);
+            }
+        }
+        log.error("Id for DocumentEntity is null");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
 }
