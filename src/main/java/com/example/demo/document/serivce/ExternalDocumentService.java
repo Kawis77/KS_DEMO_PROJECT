@@ -24,7 +24,7 @@ public class ExternalDocumentService {
         String directoryLocation = "D:\\Projects\\KS_DEMO_PROJECT\\target\\external-documents";
         String extension = "";
 
-        if (multipartFile != null) {
+        if (multipartFile != null && !multipartFile.getName().isEmpty()) {
             try {
                 Path pathDirectory = Paths.get(directoryLocation);
                 if (!Files.exists(pathDirectory)) {
@@ -51,7 +51,11 @@ public class ExternalDocumentService {
 
                 Path targetLocationExternalDoc = Path.of(directoryLocation , System.currentTimeMillis() + extension);
                 Files.copy(multipartFile.getInputStream() , targetLocationExternalDoc , StandardCopyOption.REPLACE_EXISTING);
+                File file = targetLocationExternalDoc.toFile();
 
+                if (file != null){
+                    return file;
+                }
             } catch (IOException e) {
                 log.error("Problem with create directory for external documents.  ERROR: " + e);
             }
