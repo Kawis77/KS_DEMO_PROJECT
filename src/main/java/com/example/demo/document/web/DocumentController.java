@@ -54,23 +54,23 @@ public class DocumentController {
         DocumentEntity document = new DocumentEntity();
         document.setTitle(documentData.getTitle());
 
-        if (documentData.getOwner() != null){
+        if (documentData.getOwner() != null) {
             UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-            if (userEntity != null){
+            if (userEntity != null) {
                 document.setOwner(userEntity);
             }
         }
 
-        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()){
+        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
             MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-            if (menuDocumentComponentEntity != null){
+            if (menuDocumentComponentEntity != null) {
                 document.setLocation(menuDocumentComponentEntity);
             }
         }
 
-        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()){
+        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
             CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-            if (categoryEntity != null){
+            if (categoryEntity != null) {
                 document.setCategoryEntity(categoryEntity);
             }
         }
@@ -82,7 +82,7 @@ public class DocumentController {
             document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
         }
 
-        document.setVersion(document.getVersion());
+        document.setVersion(Integer.parseInt(documentData.getVersion()));
         document.setPublicationNote(documentData.getPublicationNote());
         document.setType(DocumentConstants.REGULAR_DOC_DOCUMENT);
 
@@ -91,33 +91,32 @@ public class DocumentController {
         return ResponseEntity.ok().build();
     }
 
-
     @PostMapping("/external/create")
     public ResponseEntity<Object> createExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
 
         DocumentEntity document = new DocumentEntity();
+        File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
 
-        if (documentData.getDocumentFile() != null && !documentData.getDocumentFile().getName().isEmpty()){
-            externalDocumentService.createExternalFile(documentData.getDocumentFile());
+        if (file != null) {
+            document.setPath(file.getPath());
         }
-
         document.setTitle(documentData.getTitle());
 
-        if (documentData.getOwner() != null){
+        if (documentData.getOwner() != null) {
             UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-            if (userEntity != null){
+            if (userEntity != null) {
                 document.setOwner(userEntity);
             }
         }
-        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()){
+        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
             MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-            if (menuDocumentComponentEntity != null){
+            if (menuDocumentComponentEntity != null) {
                 document.setLocation(menuDocumentComponentEntity);
             }
         }
-        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()){
+        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
             CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-            if (categoryEntity != null){
+            if (categoryEntity != null) {
                 document.setCategoryEntity(categoryEntity);
             }
         }
@@ -125,7 +124,7 @@ public class DocumentController {
         if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
             document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
         }
-        document.setVersion(document.getVersion());
+        document.setVersion(Integer.parseInt(documentData.getVersion()));
         document.setPublicationNote(documentData.getPublicationNote());
         document.setType(DocumentConstants.EXTERNAL_DOC_DOCUMENT);
 
@@ -163,8 +162,8 @@ public class DocumentController {
 
     }
 
-    @GetMapping("/read/one/doc/{wid}")
-    public ResponseEntity<DocumentEntity> getOneDocument(@PathVariable("wid") Long id) {
+    @GetMapping("/read/one/doc/{id}")
+    public ResponseEntity<DocumentEntity> getOneDocument(@PathVariable("id") Long id) {
         if (id != null) {
 
             DocumentEntity documentEntity = documentService.findDocumentById(id);
@@ -173,6 +172,7 @@ public class DocumentController {
             }
         }
         log.error("Id for DocumentEntity is null");
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
