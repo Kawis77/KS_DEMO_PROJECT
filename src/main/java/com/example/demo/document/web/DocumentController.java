@@ -2,7 +2,6 @@ package com.example.demo.document.web;
 
 import com.example.demo.category.dao.entity.CategoryEntity;
 import com.example.demo.category.service.CategoryService;
-import com.example.demo.constans.DocumentConstants;
 import com.example.demo.document.dao.form.ExternalDocumentDataForm;
 import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.entity.DocumentEntity;
@@ -16,12 +15,17 @@ import com.example.demo.users.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import static com.example.demo.document.constans.DocumentConstants.*;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+
 
 @Log4j2
 @RequestMapping("/api/document")
@@ -76,7 +80,7 @@ public class DocumentController {
         }
 
         if (file != null) {
-            document.setPath(file.getPath());
+            document.setPath(file.getName());
         }
         if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
             document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
@@ -84,7 +88,7 @@ public class DocumentController {
 
         document.setVersion(Integer.parseInt(documentData.getVersion()));
         document.setPublicationNote(documentData.getPublicationNote());
-        document.setType(DocumentConstants.REGULAR_DOC_DOCUMENT);
+        document.setType(REGULAR_DOC_DOCUMENT);
 
         documentService.create(document);
         // return 200 when is ok
@@ -98,7 +102,7 @@ public class DocumentController {
         File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
 
         if (file != null) {
-            document.setPath(file.getPath());
+            document.setPath(file.getName());
         }
         document.setTitle(documentData.getTitle());
 
@@ -126,7 +130,7 @@ public class DocumentController {
         }
         document.setVersion(Integer.parseInt(documentData.getVersion()));
         document.setPublicationNote(documentData.getPublicationNote());
-        document.setType(DocumentConstants.EXTERNAL_DOC_DOCUMENT);
+        document.setType(EXTERNAL_DOC_DOCUMENT);
 
         documentService.create(document);
         // return 200 when is ok
@@ -145,7 +149,6 @@ public class DocumentController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @GetMapping("/read/menu/{id}")
@@ -153,26 +156,49 @@ public class DocumentController {
     public ResponseEntity<Object> readOneMenuDocuments(@PathVariable Long id) {
 
         List<DocumentEntity> lList = documentService.getAllWithMenuId(id);
-
         if (lList != null) {
             return new ResponseEntity<>(lList, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
-
     @GetMapping("/read/one/doc/{id}")
     public ResponseEntity<DocumentEntity> getOneDocument(@PathVariable("id") Long id) {
         if (id != null) {
-
             DocumentEntity documentEntity = documentService.findDocumentById(id);
             if (documentEntity != null) {
                 return new ResponseEntity<>(documentEntity, HttpStatus.OK);
             }
         }
         log.error("Id for DocumentEntity is null");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
+    @GetMapping("/show/one/{name}")
+    public ResponseEntity<byte[]> showDocumentInFrame(@PathVariable("name") String name) throws IOException {
+        String path = null;
+        //check type of file
+        if (name != null && !name.isEmpty()) {
+            File externalFile = new File(EXTERNAL_DOCUMENT_PATH + name);
+            File regularFile = new File(REGULAR_DOCUMENT_PATH + name);
+            if (externalFile.exists()) {
+                path = externalFile.getPath();
+            } else if (regularFile.exists()) {
+                path = regularFile.getPath();
+            }
+            //convert file to bytes
+            if (path != null && !path.isEmpty()) {
+                byte[] fileBytes = Files.readAllBytes(Paths.get(path));
+                //check content of document
+                String contentType = documentService.getContentDocumentType(name);
+                if (contentType != null) {
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType)) // Ustaw odpowiedni typ MIME dla PDF
+                            .body(fileBytes);
+
+                }
+            }
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

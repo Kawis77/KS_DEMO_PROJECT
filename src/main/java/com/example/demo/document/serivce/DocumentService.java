@@ -3,8 +3,10 @@ package com.example.demo.document.serivce;
 import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.dao.repository.DocumentRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import static com.example.demo.document.constans.DocumentConstants.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -96,6 +98,26 @@ public class DocumentService {
         }
         log.error("Id for DocumentEntity is null");
         return null;
+    }
+
+
+    public String getContentDocumentType (String name){
+        String contentType = null;
+        if (name.contains(DOCUMENT_EXTENSION_PDF)) {
+            contentType = DOCUMENT_CONTENT_PDF ;
+        } else if (name.contains(DOCUMENT_EXTENSION_JPEG)) {
+            contentType = DOCUMENT_CONTENT_JPEG;
+        } else if (name.contains(DOCUMENT_EXTENSION_PNG)) {
+            contentType = DOCUMENT_CONTENT_PNG;
+        } else if (name.contains(DOCUMENT_EXTENSION_DOCX)) {
+            contentType =DOCUMENT_CONTENT_DOCX;
+        } else if (name.contains(DOCUMENT_EXTENSION_XLSX)) {
+            contentType = DOCUMENT_CONTENT_XLSX;
+        } else if (name.contains(DOCUMENT_EXTENSION_CSV)) {
+            contentType = DOCUMENT_CONTENT_CSV;
+        }
+
+        return contentType;
     }
 }
 

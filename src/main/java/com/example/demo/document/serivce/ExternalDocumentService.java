@@ -1,7 +1,6 @@
 package com.example.demo.document.serivce;
 
 
-import com.example.demo.constans.DocumentConstants;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static com.example.demo.constans.DocumentConstants.*;
+import static com.example.demo.document.constans.DocumentConstants.*;
 
 @Log4j2
 @Service
