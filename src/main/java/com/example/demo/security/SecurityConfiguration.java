@@ -10,6 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.header.HeaderWriter;
+import org.springframework.security.web.header.HeaderWriterFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,31 +43,36 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-
-
-@Override
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-       http.authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers("/api/user/register").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/api/user/test").permitAll()
                 .antMatchers("/users/").permitAll()
-               .antMatchers(HttpMethod.GET,
-               "/index*", "/static/**", "/*.js", "/*.json", "/*.ico")
+                .antMatchers(HttpMethod.GET,
+                        "/index*", "/static/**", "/*.js", "/*.json", "/*.ico")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-               .loginPage("/api/security/customlogin")
+                .loginPage("/api/security/customlogin")
                 .loginProcessingUrl("/api/security/customlogin").permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/api/security/customlogin")
                 .and()
                 .csrf()
-                .disable();
-
-       http.cors();
+                .disable()
+                .headers()
+                .contentSecurityPolicy("frame-ancestors * http://localhost:8080")
+                .and()
+                .frameOptions().disable() // Wyłącz nagłówek X-Frame-Options
+                .and()
+                .cors(); // Dodaj konfigurację CORS tutaj
     }
+
+
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

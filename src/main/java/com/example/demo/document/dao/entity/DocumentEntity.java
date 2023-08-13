@@ -26,6 +26,7 @@ public class DocumentEntity {
 
     private String publicationNote;
 
+
     @ManyToOne
     @JoinColumn(name = "menu_component_id")
     private MenuDocumentComponentEntity location;
@@ -144,4 +145,5 @@ public class DocumentEntity {
     public void setOwner(UserEntity owner) {
         this.owner = owner;
     }
+
 }

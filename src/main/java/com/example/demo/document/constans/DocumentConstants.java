@@ -1,4 +1,4 @@
-package com.example.demo.constans;
+package com.example.demo.document.constans;
 
 public class DocumentConstants {
     public static final int  REGULAR_DOC_DOCUMENT = 1;
@@ -22,6 +22,11 @@ public class DocumentConstants {
     public static final String DOCUMENT_EXTENSION_DOCX =  ".docx";
     public static final String DOCUMENT_EXTENSION_XLSX =  ".xlsx";
     public static final String DOCUMENT_EXTENSION_CSV =  ".csv";
+
+
+
+    public static final String EXTERNAL_DOCUMENT_PATH = "D:\\Projects\\KS_DEMO_PROJECT\\target\\external-documents\\";
+    public static final String REGULAR_DOCUMENT_PATH = "D:\\Projects\\KS_DEMO_PROJECT\\target\\documents\\";
 
 
 }
