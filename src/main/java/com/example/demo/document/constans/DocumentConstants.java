@@ -13,6 +13,8 @@ public class DocumentConstants {
     public static final String DOCUMENT_CONTENT_XLSX =  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static final String DOCUMENT_CONTENT_CSV =  "text/csv";
 
+    public static final String DOCUMENT_CONTENT_TXT = "text/plain";
+
 
     //EXTENSION TYPE EXTERNAL DOCUMENTS
 
@@ -22,8 +24,7 @@ public class DocumentConstants {
     public static final String DOCUMENT_EXTENSION_DOCX =  ".docx";
     public static final String DOCUMENT_EXTENSION_XLSX =  ".xlsx";
     public static final String DOCUMENT_EXTENSION_CSV =  ".csv";
-
-
+    public static final String DOCUMENT_EXTENSION_TXT = ".txt";
 
     public static final String EXTERNAL_DOCUMENT_PATH = "D:\\Projects\\KS_DEMO_PROJECT\\target\\external-documents\\";
     public static final String REGULAR_DOCUMENT_PATH = "D:\\Projects\\KS_DEMO_PROJECT\\target\\documents\\";

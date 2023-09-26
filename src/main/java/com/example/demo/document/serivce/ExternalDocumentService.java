@@ -43,7 +43,9 @@ public class ExternalDocumentService {
                     extension = DOCUMENT_EXTENSION_XLSX;
                 }else if (documentType.equals(DOCUMENT_CONTENT_CSV)){
                     extension = DOCUMENT_EXTENSION_CSV;
-                }else {
+                }else if(documentType.equals(DOCUMENT_CONTENT_TXT)) {
+                    extension = DOCUMENT_EXTENSION_TXT;
+                }else{
                     log.info("Problem with create file , type of file is wrong");
                     return null;
                 }

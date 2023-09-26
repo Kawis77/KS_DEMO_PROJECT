@@ -100,7 +100,6 @@ public class DocumentService {
         return null;
     }
 
-
     public String getContentDocumentType (String name){
         String contentType = null;
         if (name.contains(DOCUMENT_EXTENSION_PDF)) {
@@ -115,6 +114,8 @@ public class DocumentService {
             contentType = DOCUMENT_CONTENT_XLSX;
         } else if (name.contains(DOCUMENT_EXTENSION_CSV)) {
             contentType = DOCUMENT_CONTENT_CSV;
+        }else if (name.contains(DOCUMENT_EXTENSION_TXT)){
+            contentType = DOCUMENT_CONTENT_TXT;
         }
 
         return contentType;

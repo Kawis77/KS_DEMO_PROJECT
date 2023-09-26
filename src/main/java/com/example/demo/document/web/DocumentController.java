@@ -180,7 +180,7 @@ public class DocumentController {
         //check type of file
         if (name != null && !name.isEmpty()) {
             File externalFile = new File(EXTERNAL_DOCUMENT_PATH + name);
-            File regularFile = new File(REGULAR_DOCUMENT_PATH + name);
+             File regularFile = new File(REGULAR_DOCUMENT_PATH + name);
             if (externalFile.exists()) {
                 path = externalFile.getPath();
             } else if (regularFile.exists()) {

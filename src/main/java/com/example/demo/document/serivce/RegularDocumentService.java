@@ -25,7 +25,7 @@ public class RegularDocumentService {
 
 
                 String html = regularDocumentDataForm.getContent();
-                String title = regularDocumentDataForm.getTitle() + ".docx";
+                String title = regularDocumentDataForm.getTitle() + ".txt";
 
                 String locationForDoc = "D:\\Projects\\KS_DEMO_PROJECT\\target\\documents\\" + title;
 
@@ -35,7 +35,7 @@ public class RegularDocumentService {
                 Document doc = new Document(htmlStream, loadOptions);
 
                 // Zapisanie dokumentu w formacie docx
-                doc.save(locationForDoc, SaveFormat.DOCX);
+                doc.save(locationForDoc, SaveFormat.TEXT);
 
                 createdFile = new File(locationForDoc);
 
