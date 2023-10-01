@@ -30,4 +30,6 @@ public class DocumentConstants {
     public static final String REGULAR_DOCUMENT_PATH = "D:\\Projects\\KS_DEMO_PROJECT\\target\\documents\\";
 
 
+
+
 }

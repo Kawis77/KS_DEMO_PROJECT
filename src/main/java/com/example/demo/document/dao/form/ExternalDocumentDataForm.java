@@ -2,8 +2,12 @@ package com.example.demo.document.dao.form;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+
+
 public class ExternalDocumentDataForm {
 
+    private Long id;
     private String title;
     private String owner;
     private String author;
@@ -30,14 +34,6 @@ public class ExternalDocumentDataForm {
 
     public void setOwner(String owner) {
         this.owner = owner;
-    }
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
     }
 
     public String getLocation() {
@@ -88,6 +84,23 @@ public class ExternalDocumentDataForm {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
 
 
 }

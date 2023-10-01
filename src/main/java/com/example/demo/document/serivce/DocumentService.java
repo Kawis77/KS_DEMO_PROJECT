@@ -3,14 +3,14 @@ package com.example.demo.document.serivce;
 import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.dao.repository.DocumentRepository;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import static com.example.demo.document.constans.DocumentConstants.*;
-import java.sql.Date;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class DocumentService {
         return lDocumentRepository.save(aDocumentEntity);
     }
 
-    public DocumentEntity edit(DocumentEntity aDocumentEntity) {
+    public DocumentEntity update(DocumentEntity aDocumentEntity) {
 
         return lDocumentRepository.save(aDocumentEntity);
     }
@@ -55,18 +55,16 @@ public class DocumentService {
 
     }
 
-    public Date convertToSQLDate(String date) {
-        Date sqlDate = null;
+    public Date convertToUtilDate(String date) {
+        java.util.Date utilDate = null;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date utilDate = null;
             utilDate = dateFormat.parse(date);
-            sqlDate = new Date(utilDate.getTime());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
-        return sqlDate;
+        return utilDate;
     }
 
     public List<DocumentEntity> getAllWithMenuId(Long id) {
