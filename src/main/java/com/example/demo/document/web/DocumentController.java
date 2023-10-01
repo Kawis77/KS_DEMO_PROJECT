@@ -8,6 +8,7 @@ import com.example.demo.document.dao.entity.DocumentEntity;
 import com.example.demo.document.serivce.DocumentService;
 import com.example.demo.document.serivce.ExternalDocumentService;
 import com.example.demo.document.serivce.RegularDocumentService;
+import com.example.demo.files.dao.FileConstants;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import com.example.demo.users.dao.entity.UserEntity;
@@ -83,7 +84,7 @@ public class DocumentController {
             document.setPath(file.getName());
         }
         if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
-            document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
+            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
         }
 
         document.setVersion(Integer.parseInt(documentData.getVersion()));
@@ -125,8 +126,8 @@ public class DocumentController {
             }
         }
 
-        if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
-            document.setCreateDate(documentService.convertToSQLDate(documentData.getCreateDate()));
+        if (documentData.getCreateDate() != null ) {
+            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
         }
         document.setVersion(Integer.parseInt(documentData.getVersion()));
         document.setPublicationNote(documentData.getPublicationNote());
@@ -179,11 +180,14 @@ public class DocumentController {
         String path = null;
         //check type of file
         if (name != null && !name.isEmpty()) {
-            File externalFile = new File(EXTERNAL_DOCUMENT_PATH + name);
-             File regularFile = new File(REGULAR_DOCUMENT_PATH + name);
-            if (externalFile.exists()) {
-                path = externalFile.getPath();
-            } else if (regularFile.exists()) {
+            File externalDocument = new File(EXTERNAL_DOCUMENT_PATH + name);
+             File regularDocument = new File(REGULAR_DOCUMENT_PATH + name);
+             File regularFile = new File(FileConstants.REGULAR_FILE_PATH + name);
+            if (externalDocument.exists()) {
+                path = externalDocument.getPath();
+            } else if (regularDocument.exists()) {
+                path = regularDocument.getPath();
+            }else if (regularFile.exists()){
                 path = regularFile.getPath();
             }
             //convert file to bytes
@@ -201,5 +205,50 @@ public class DocumentController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/external/update")
+    public ResponseEntity<Object> updateExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
+
+        if (documentData != null){
+          DocumentEntity documentEntity = documentService.findDocumentById(documentData.getId());
+          if (documentEntity != null){
+              if (documentData.getDocumentFile() != null){
+                  File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
+                  if (file != null){
+                      documentEntity.setPath(file.getName());
+                  }
+              }
+          }
+          documentEntity.setTitle(documentData.getTitle());
+          documentEntity.setVersion(Integer.parseInt(documentData.getVersion()));
+          documentEntity.setPublicationNote(documentData.getPublicationNote());
+          documentEntity.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
+
+            if (documentData.getOwner() != null && !documentEntity.equals(documentData.getOwner())) {
+                UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+                if (userEntity != null) {
+                    documentEntity.setOwner(userEntity);
+                }
+            }
+            if (documentData.getLocation() != null && !documentEntity.getLocation().getId().equals(documentData.getLocation())) {
+                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+                if (menuDocumentComponentEntity != null) {
+                    documentEntity.setLocation(menuDocumentComponentEntity);
+                }
+            }
+            if (documentData.getCategory() != null && !documentEntity.getCategoryEntity().getId().equals(documentData.getCategory())) {
+                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+                if (categoryEntity != null) {
+                    documentEntity.setCategoryEntity(categoryEntity);
+                }
+            }
+            documentService.update(documentEntity);
+            log.debug("Document updated correctly with id: " + documentEntity.getId());
+            return ResponseEntity.ok().build();
+        }
+        log.error("Failed to update this object, an object with this id does not exist :" + documentData.getId());
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 
 }
