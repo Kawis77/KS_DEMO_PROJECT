@@ -26,6 +26,8 @@ public class DocumentEntity {
 
     private String publicationNote;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "menu_component_id")
@@ -146,4 +148,10 @@ public class DocumentEntity {
         this.owner = owner;
     }
 
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

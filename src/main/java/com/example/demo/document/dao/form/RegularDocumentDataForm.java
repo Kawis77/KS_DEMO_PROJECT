@@ -3,6 +3,7 @@ package com.example.demo.document.dao.form;
 
 public class RegularDocumentDataForm {
 
+    private Long id ;
     private String title;
     private String owner;
     private String author;
@@ -79,15 +80,12 @@ public class RegularDocumentDataForm {
         this.content = content;
     }
 
-    public String getAuthor() {
-        return author;
+    public Long getId() {
+        return id;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-
-
 }
 
