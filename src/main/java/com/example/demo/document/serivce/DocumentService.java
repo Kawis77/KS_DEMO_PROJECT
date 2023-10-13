@@ -1,12 +1,16 @@
 package com.example.demo.document.serivce;
 
 import com.example.demo.document.dao.entity.DocumentEntity;
+import com.example.demo.document.dao.form.ExternalDocumentDataForm;
+import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.repository.DocumentRepository;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 
 import static com.example.demo.document.constans.DocumentConstants.*;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,25 +102,56 @@ public class DocumentService {
         return null;
     }
 
-    public String getContentDocumentType (String name){
+    public String getContentDocumentType(String name) {
         String contentType = null;
         if (name.contains(DOCUMENT_EXTENSION_PDF)) {
-            contentType = DOCUMENT_CONTENT_PDF ;
+            contentType = DOCUMENT_CONTENT_PDF;
         } else if (name.contains(DOCUMENT_EXTENSION_JPEG)) {
             contentType = DOCUMENT_CONTENT_JPEG;
         } else if (name.contains(DOCUMENT_EXTENSION_PNG)) {
             contentType = DOCUMENT_CONTENT_PNG;
         } else if (name.contains(DOCUMENT_EXTENSION_DOCX)) {
-            contentType =DOCUMENT_CONTENT_DOCX;
+            contentType = DOCUMENT_CONTENT_DOCX;
         } else if (name.contains(DOCUMENT_EXTENSION_XLSX)) {
             contentType = DOCUMENT_CONTENT_XLSX;
         } else if (name.contains(DOCUMENT_EXTENSION_CSV)) {
             contentType = DOCUMENT_CONTENT_CSV;
-        }else if (name.contains(DOCUMENT_EXTENSION_TXT)){
+        } else if (name.contains(DOCUMENT_EXTENSION_TXT)) {
             contentType = DOCUMENT_CONTENT_TXT;
         }
 
         return contentType;
+    }
+
+
+    public List<String> validateDocumentFields(Object documentForm) {
+        List<String> validationList = new ArrayList<>();
+
+        try {
+            if (documentForm instanceof ExternalDocumentDataForm) {
+                ExternalDocumentDataForm externalDocumentDataForm = (ExternalDocumentDataForm) documentForm;
+                Field[] fields = ExternalDocumentDataForm.class.getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    if (field.get(externalDocumentDataForm) == null) {
+                        validationList.add("Pole o nazwie " + field.getName() + " nie zostało wypełnione");
+                    }
+                }
+            } else if (documentForm instanceof RegularDocumentDataForm) {
+                RegularDocumentDataForm regularDocumentDataForm = (RegularDocumentDataForm) documentForm;
+
+                Field[] fields = RegularDocumentDataForm.class.getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    if (field.get(regularDocumentDataForm) == null) {
+                        validationList.add("Pole o nazwie " + field.getName() + " nie zostało wypełnione");
+                    }
+                }
+            }
+        }catch (IllegalAccessException accessException){
+            log.error(accessException);
+        }
+        return validationList;
     }
 }
 
