@@ -56,8 +56,10 @@ public class DocumentController {
 
     @PostMapping("/regular/create")
     public ResponseEntity<Object> createRegularDocument(@RequestBody RegularDocumentDataForm documentData) {
-        File file = regularDocumentService.createRegularDocumentContent(documentData);
 
+
+
+        File file = regularDocumentService.createRegularDocumentContent(documentData);
         DocumentEntity document = new DocumentEntity();
         document.setTitle(documentData.getTitle());
         if (documentData.getOwner() != null) {
@@ -100,6 +102,7 @@ public class DocumentController {
     @PostMapping("/external/create")
     public ResponseEntity<Object> createExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
 
+        documentService.validateDocumentFields(documentData);
         DocumentEntity document = new DocumentEntity();
         File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
 
