@@ -6,7 +6,6 @@ public class RegularDocumentDataForm {
     private Long id ;
     private String title;
     private String owner;
-    private String author;
     private String createDate;
     private String location;
     private String category;

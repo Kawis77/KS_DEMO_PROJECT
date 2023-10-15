@@ -57,89 +57,96 @@ public class DocumentController {
     @PostMapping("/regular/create")
     public ResponseEntity<Object> createRegularDocument(@RequestBody RegularDocumentDataForm documentData) {
 
+        List<String> lListError = documentService.validateDocumentFields(documentData);
+        if (lListError.isEmpty()) {
 
-
-        File file = regularDocumentService.createRegularDocumentContent(documentData);
-        DocumentEntity document = new DocumentEntity();
-        document.setTitle(documentData.getTitle());
-        if (documentData.getOwner() != null) {
-            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-            if (userEntity != null) {
-                document.setOwner(userEntity);
+            File file = regularDocumentService.createRegularDocumentContent(documentData);
+            DocumentEntity document = new DocumentEntity();
+            document.setTitle(documentData.getTitle());
+            if (documentData.getOwner() != null) {
+                UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+                if (userEntity != null) {
+                    document.setOwner(userEntity);
+                }
             }
-        }
-        if (documentData.getContent() != null && !documentData.getContent().isEmpty()) {
-            document.setContent(documentData.getContent());
-        }
-        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
-            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-            if (menuDocumentComponentEntity != null) {
-                document.setLocation(menuDocumentComponentEntity);
+            if (documentData.getContent() != null && !documentData.getContent().isEmpty()) {
+                document.setContent(documentData.getContent());
             }
-        }
-        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
-            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-            if (categoryEntity != null) {
-                document.setCategoryEntity(categoryEntity);
+            if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
+                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+                if (menuDocumentComponentEntity != null) {
+                    document.setLocation(menuDocumentComponentEntity);
+                }
             }
-        }
-        if (file != null) {
-            document.setPath(file.getName());
-        }
-        if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
-            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
-        }
+            if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
+                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+                if (categoryEntity != null) {
+                    document.setCategoryEntity(categoryEntity);
+                }
+            }
+            if (file != null) {
+                document.setPath(file.getName());
+            }
+            if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
+                document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
+            }
 
-        document.setVersion(Integer.parseInt(documentData.getVersion()));
-        document.setPublicationNote(documentData.getPublicationNote());
-        document.setType(REGULAR_DOC_DOCUMENT);
+            document.setVersion(Integer.parseInt(documentData.getVersion()));
+            document.setPublicationNote(documentData.getPublicationNote());
+            document.setType(REGULAR_DOC_DOCUMENT);
 
-        documentService.create(document);
-        // return 200 when is ok
-        return ResponseEntity.ok().build();
+            documentService.create(document);
+            // return 200 when is ok
+            return ResponseEntity.ok().build();
+        }
+        return new ResponseEntity<>(lListError , HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/external/create")
     public ResponseEntity<Object> createExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
 
-        documentService.validateDocumentFields(documentData);
-        DocumentEntity document = new DocumentEntity();
-        File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
+        List<String> lListError = documentService.validateDocumentFields(documentData);
 
-        if (file != null) {
-            document.setPath(file.getName());
-        }
-        document.setTitle(documentData.getTitle());
+        if (lListError.isEmpty()) {
+            DocumentEntity document = new DocumentEntity();
+            File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
 
-        if (documentData.getOwner() != null) {
-            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-            if (userEntity != null) {
-                document.setOwner(userEntity);
+            if (file != null) {
+                document.setPath(file.getName());
             }
-        }
-        if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
-            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-            if (menuDocumentComponentEntity != null) {
-                document.setLocation(menuDocumentComponentEntity);
-            }
-        }
-        if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
-            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-            if (categoryEntity != null) {
-                document.setCategoryEntity(categoryEntity);
-            }
-        }
+            document.setTitle(documentData.getTitle());
 
-        if (documentData.getCreateDate() != null) {
-            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
-        }
-        document.setVersion(Integer.parseInt(documentData.getVersion()));
-        document.setPublicationNote(documentData.getPublicationNote());
-        document.setType(EXTERNAL_DOC_DOCUMENT);
+            if (documentData.getOwner() != null) {
+                UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+                if (userEntity != null) {
+                    document.setOwner(userEntity);
+                }
+            }
+            if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
+                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+                if (menuDocumentComponentEntity != null) {
+                    document.setLocation(menuDocumentComponentEntity);
+                }
+            }
+            if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
+                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+                if (categoryEntity != null) {
+                    document.setCategoryEntity(categoryEntity);
+                }
+            }
 
-        documentService.create(document);
-        // return 200 when is ok
-        return ResponseEntity.ok().build();
+            if (documentData.getCreateDate() != null) {
+                document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
+            }
+            document.setVersion(Integer.parseInt(documentData.getVersion()));
+            document.setPublicationNote(documentData.getPublicationNote());
+            document.setType(EXTERNAL_DOC_DOCUMENT);
+
+            documentService.create(document);
+            // return 200 when is ok
+            return ResponseEntity.ok().build();
+        }
+        return new ResponseEntity<>(lListError , HttpStatus.OK);
     }
 
 
@@ -256,12 +263,12 @@ public class DocumentController {
     }
 
     @PostMapping("/regular/update")
-    public ResponseEntity<Object> updateRegularDocument(@ModelAttribute RegularDocumentDataForm regularDocumentDataForm){
-        if (regularDocumentDataForm != null){
+    public ResponseEntity<Object> updateRegularDocument(@ModelAttribute RegularDocumentDataForm regularDocumentDataForm) {
+        if (regularDocumentDataForm != null) {
             DocumentEntity documentEntity = documentService.findDocumentById(regularDocumentDataForm.getId());
-            if (documentEntity!= null){
+            if (documentEntity != null) {
                 File file = regularDocumentService.createRegularDocumentContent(regularDocumentDataForm);
-                if (file.exists()){
+                if (file.exists()) {
                     documentEntity.setPath(file.getName());
                 }
 
