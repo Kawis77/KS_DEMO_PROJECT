@@ -10,7 +10,6 @@ public class ExternalDocumentDataForm {
     private Long id;
     private String title;
     private String owner;
-    private String author;
     private String createDate;
     private String location;
     private String category;
@@ -75,14 +74,6 @@ public class ExternalDocumentDataForm {
 
     public void setDocumentFile(MultipartFile documentFile) {
         this.documentFile = documentFile;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public Long getId() {

@@ -133,7 +133,7 @@ public class DocumentService {
                 Field[] fields = ExternalDocumentDataForm.class.getDeclaredFields();
                 for (Field field : fields) {
                     field.setAccessible(true);
-                    if (field.get(externalDocumentDataForm) == null) {
+                    if (field.get(externalDocumentDataForm)== null && !field.getName().equals("id")) {
                         validationList.add("Pole o nazwie " + field.getName() + " nie zostało wypełnione");
                     }
                 }
@@ -143,7 +143,7 @@ public class DocumentService {
                 Field[] fields = RegularDocumentDataForm.class.getDeclaredFields();
                 for (Field field : fields) {
                     field.setAccessible(true);
-                    if (field.get(regularDocumentDataForm) == null) {
+                    if (field.get(regularDocumentDataForm) == null && !field.getName().equals("id")) {
                         validationList.add("Pole o nazwie " + field.getName() + " nie zostało wypełnione");
                     }
                 }
