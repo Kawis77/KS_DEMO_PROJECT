@@ -56,97 +56,75 @@ public class DocumentController {
 
     @PostMapping("/regular/create")
     public ResponseEntity<Object> createRegularDocument(@RequestBody RegularDocumentDataForm documentData) {
-
+        //validate fields
         List<String> lListError = documentService.validateDocumentFields(documentData);
         if (lListError.isEmpty()) {
-
             File file = regularDocumentService.createRegularDocumentContent(documentData);
             DocumentEntity document = new DocumentEntity();
             document.setTitle(documentData.getTitle());
-            if (documentData.getOwner() != null) {
-                UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-                if (userEntity != null) {
-                    document.setOwner(userEntity);
-                }
+            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+            if (userEntity != null) {
+                document.setOwner(userEntity);
             }
-            if (documentData.getContent() != null && !documentData.getContent().isEmpty()) {
-                document.setContent(documentData.getContent());
+            document.setContent(documentData.getContent());
+            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+            if (menuDocumentComponentEntity != null) {
+                document.setLocation(menuDocumentComponentEntity);
             }
-            if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
-                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-                if (menuDocumentComponentEntity != null) {
-                    document.setLocation(menuDocumentComponentEntity);
-                }
+            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+            if (categoryEntity != null) {
+                document.setCategoryEntity(categoryEntity);
             }
-            if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
-                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-                if (categoryEntity != null) {
-                    document.setCategoryEntity(categoryEntity);
-                }
-            }
-            if (file != null) {
-                document.setPath(file.getName());
-            }
-            if (documentData.getCreateDate() != null && !documentData.getCreateDate().isEmpty()) {
-                document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
-            }
-
+            document.setPath(file.getName());
+            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
             document.setVersion(Integer.parseInt(documentData.getVersion()));
             document.setPublicationNote(documentData.getPublicationNote());
             document.setType(REGULAR_DOC_DOCUMENT);
 
             documentService.create(document);
             // return 200 when is ok
+            log.debug("document with id : " + document.getId() + " successfully created");
             return ResponseEntity.ok().build();
         }
-        return new ResponseEntity<>(lListError , HttpStatus.BAD_REQUEST);
+        log.error("Failed to update this object :" + documentData.getId());
+        return new ResponseEntity<>(lListError, HttpStatus.OK);
     }
 
     @PostMapping("/external/create")
     public ResponseEntity<Object> createExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
-
+        //validate fields
         List<String> lListError = documentService.validateDocumentFields(documentData);
 
         if (lListError.isEmpty()) {
             DocumentEntity document = new DocumentEntity();
             File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
-
-            if (file != null) {
-                document.setPath(file.getName());
-            }
+            document.setPath(file.getName());
             document.setTitle(documentData.getTitle());
-
-            if (documentData.getOwner() != null) {
-                UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-                if (userEntity != null) {
-                    document.setOwner(userEntity);
-                }
+            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+            if (userEntity != null) {
+                document.setOwner(userEntity);
             }
-            if (documentData.getLocation() != null && !documentData.getLocation().isEmpty()) {
-                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-                if (menuDocumentComponentEntity != null) {
-                    document.setLocation(menuDocumentComponentEntity);
-                }
+            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+            if (menuDocumentComponentEntity != null) {
+                document.setLocation(menuDocumentComponentEntity);
             }
-            if (documentData.getCategory() != null && !documentData.getCategory().isEmpty()) {
-                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-                if (categoryEntity != null) {
-                    document.setCategoryEntity(categoryEntity);
-                }
+            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+            if (categoryEntity != null) {
+                document.setCategoryEntity(categoryEntity);
             }
-
-            if (documentData.getCreateDate() != null) {
-                document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
-            }
+            document.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
             document.setVersion(Integer.parseInt(documentData.getVersion()));
             document.setPublicationNote(documentData.getPublicationNote());
             document.setType(EXTERNAL_DOC_DOCUMENT);
 
             documentService.create(document);
             // return 200 when is ok
+            log.debug("document with id : " + document.getId() + " successfully created");
             return ResponseEntity.ok().build();
+
         }
-        return new ResponseEntity<>(lListError , HttpStatus.OK);
+        log.error("Failed to update this object :" + documentData.getId());
+        return new ResponseEntity<>(lListError, HttpStatus.OK);
     }
 
 
@@ -155,7 +133,6 @@ public class DocumentController {
     public ResponseEntity<Object> readAllDocuments() {
 
         List<DocumentEntity> lList = documentService.readAll();
-
         if (lList != null) {
             return new ResponseEntity<>(lList, HttpStatus.OK);
         } else {
@@ -220,89 +197,75 @@ public class DocumentController {
 
     @PostMapping("/external/update")
     public ResponseEntity<Object> updateExternalDocument(@ModelAttribute ExternalDocumentDataForm documentData) {
+        //validate fields
+        List<String> lListError = documentService.validateDocumentFields(documentData);
 
-        if (documentData != null) {
+        if (documentData != null && lListError.isEmpty()) {
             DocumentEntity documentEntity = documentService.findDocumentById(documentData.getId());
             if (documentEntity != null) {
-                if (documentData.getDocumentFile() != null) {
-                    File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
-                    if (file != null) {
-                        documentEntity.setPath(file.getName());
-                    }
+                File file = externalDocumentService.createExternalFile(documentData.getDocumentFile());
+                if (file != null) {
+                    documentEntity.setPath(file.getName());
                 }
-                documentEntity.setTitle(documentData.getTitle());
-                documentEntity.setVersion(Integer.parseInt(documentData.getVersion()));
-                documentEntity.setPublicationNote(documentData.getPublicationNote());
-                documentEntity.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
-
-                if (documentData.getOwner() != null && !documentEntity.equals(documentData.getOwner())) {
-                    UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
-                    if (userEntity != null) {
-                        documentEntity.setOwner(userEntity);
-                    }
-                }
-                if (documentData.getLocation() != null && !documentEntity.getLocation().getId().equals(documentData.getLocation())) {
-                    MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
-                    if (menuDocumentComponentEntity != null) {
-                        documentEntity.setLocation(menuDocumentComponentEntity);
-                    }
-                }
-                if (documentData.getCategory() != null && !documentEntity.getCategoryEntity().getId().equals(documentData.getCategory())) {
-                    CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
-                    if (categoryEntity != null) {
-                        documentEntity.setCategoryEntity(categoryEntity);
-                    }
-                }
-                documentService.update(documentEntity);
-                log.debug("Document updated correctly with id: " + documentEntity.getId());
-                return ResponseEntity.ok().build();
             }
+            documentEntity.setTitle(documentData.getTitle());
+            documentEntity.setVersion(Integer.parseInt(documentData.getVersion()));
+            documentEntity.setPublicationNote(documentData.getPublicationNote());
+            documentEntity.setCreateDate(documentService.convertToUtilDate(documentData.getCreateDate()));
+            UserEntity userEntity = userService.getUserById(Long.parseLong(documentData.getOwner())).get();
+            if (userEntity != null) {
+                documentEntity.setOwner(userEntity);
+            }
+            MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(documentData.getLocation()));
+            if (menuDocumentComponentEntity != null) {
+                documentEntity.setLocation(menuDocumentComponentEntity);
+            }
+            CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(documentData.getCategory()));
+            if (categoryEntity != null) {
+                documentEntity.setCategoryEntity(categoryEntity);
+            }
+            documentService.update(documentEntity);
+            log.debug("Document updated correctly with id: " + documentEntity.getId());
+            return ResponseEntity.ok().build();
         }
-        log.error("Failed to update this object, an object with this id does not exist :" + documentData.getId());
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        log.error("Failed to update this object :" + documentData.getId());
+        return new ResponseEntity<>(lListError, HttpStatus.OK);
     }
 
     @PostMapping("/regular/update")
     public ResponseEntity<Object> updateRegularDocument(@ModelAttribute RegularDocumentDataForm regularDocumentDataForm) {
-        if (regularDocumentDataForm != null) {
+        List<String> lListError = documentService.validateDocumentFields(regularDocumentDataForm);
+        if (regularDocumentDataForm != null && lListError.isEmpty()) {
             DocumentEntity documentEntity = documentService.findDocumentById(regularDocumentDataForm.getId());
             if (documentEntity != null) {
                 File file = regularDocumentService.createRegularDocumentContent(regularDocumentDataForm);
                 if (file.exists()) {
                     documentEntity.setPath(file.getName());
                 }
-
                 documentEntity.setTitle(regularDocumentDataForm.getTitle());
                 documentEntity.setVersion(Integer.parseInt(regularDocumentDataForm.getVersion()));
                 documentEntity.setPublicationNote(regularDocumentDataForm.getPublicationNote());
                 documentEntity.setCreateDate(documentService.convertToUtilDate(regularDocumentDataForm.getCreateDate()));
                 documentEntity.setContent(regularDocumentDataForm.getContent());
-
-                if (regularDocumentDataForm.getOwner() != null && !documentEntity.equals(regularDocumentDataForm.getOwner())) {
-                    UserEntity userEntity = userService.getUserById(Long.parseLong(regularDocumentDataForm.getOwner())).get();
-                    if (userEntity != null) {
-                        documentEntity.setOwner(userEntity);
-                    }
+                UserEntity userEntity = userService.getUserById(Long.parseLong(regularDocumentDataForm.getOwner())).get();
+                if (userEntity != null) {
+                    documentEntity.setOwner(userEntity);
                 }
-                if (regularDocumentDataForm.getLocation() != null && !documentEntity.getLocation().getId().equals(regularDocumentDataForm.getLocation())) {
-                    MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(regularDocumentDataForm.getLocation()));
-                    if (menuDocumentComponentEntity != null) {
-                        documentEntity.setLocation(menuDocumentComponentEntity);
-                    }
+                MenuDocumentComponentEntity menuDocumentComponentEntity = menuDocumentComponentService.getMenuComponentById(Long.parseLong(regularDocumentDataForm.getLocation()));
+                if (menuDocumentComponentEntity != null) {
+                    documentEntity.setLocation(menuDocumentComponentEntity);
                 }
-                if (regularDocumentDataForm.getCategory() != null && !documentEntity.getCategoryEntity().getId().equals(regularDocumentDataForm.getCategory())) {
-                    CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(regularDocumentDataForm.getCategory()));
-                    if (categoryEntity != null) {
-                        documentEntity.setCategoryEntity(categoryEntity);
-                    }
+                CategoryEntity categoryEntity = categoryService.getCategoryById(Long.parseLong(regularDocumentDataForm.getCategory()));
+                if (categoryEntity != null) {
+                    documentEntity.setCategoryEntity(categoryEntity);
                 }
                 documentService.update(documentEntity);
                 log.debug("Document updated correctly with id: " + documentEntity.getId());
                 return ResponseEntity.ok().build();
             }
         }
-        log.error("Failed to update this object, an object with this id does not exist :" + regularDocumentDataForm.getId());
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        log.error("Failed to update this object" + regularDocumentDataForm.getId());
+        return new ResponseEntity<>(lListError, HttpStatus.OK);
     }
 
 }
