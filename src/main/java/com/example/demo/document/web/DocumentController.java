@@ -14,6 +14,7 @@ import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import com.example.demo.users.dao.entity.UserEntity;
 import com.example.demo.users.service.UserService;
+import com.example.demo.validation.ValidationError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,7 +88,7 @@ public class DocumentController {
             return ResponseEntity.ok().build();
         }
         log.error("Failed to update this object :" + documentData.getId());
-        return new ResponseEntity<>(lListError, HttpStatus.OK);
+        return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/external/create")
@@ -124,7 +125,7 @@ public class DocumentController {
 
         }
         log.error("Failed to update this object :" + documentData.getId());
-        return new ResponseEntity<>(lListError, HttpStatus.OK);
+        return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
     }
 
 
@@ -229,7 +230,7 @@ public class DocumentController {
             return ResponseEntity.ok().build();
         }
         log.error("Failed to update this object :" + documentData.getId());
-        return new ResponseEntity<>(lListError, HttpStatus.OK);
+        return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/regular/update")
@@ -265,7 +266,7 @@ public class DocumentController {
             }
         }
         log.error("Failed to update this object" + regularDocumentDataForm.getId());
-        return new ResponseEntity<>(lListError, HttpStatus.OK);
+        return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
     }
 
 }
