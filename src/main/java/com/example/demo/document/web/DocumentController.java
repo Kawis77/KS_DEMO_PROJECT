@@ -85,7 +85,8 @@ public class DocumentController {
             documentService.create(document);
             // return 200 when is ok
             log.debug("document with id : " + document.getId() + " successfully created");
-            return ResponseEntity.ok().build();
+            documentData.setId(document.getId());
+            return new ResponseEntity<>(documentData , HttpStatus.OK);
         }
         log.error("Failed to update this object :" + documentData.getId());
         return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
@@ -121,7 +122,8 @@ public class DocumentController {
             documentService.create(document);
             // return 200 when is ok
             log.debug("document with id : " + document.getId() + " successfully created");
-            return ResponseEntity.ok().build();
+            documentData.setId(document.getId());
+            return new ResponseEntity<>(documentData , HttpStatus.OK);
 
         }
         log.error("Failed to update this object :" + documentData.getId());
