@@ -86,7 +86,7 @@ public class DocumentController {
             // return 200 when is ok
             log.debug("document with id : " + document.getId() + " successfully created");
             documentData.setId(document.getId());
-            return new ResponseEntity<>(documentData , HttpStatus.OK);
+            return new ResponseEntity<>(documentData, HttpStatus.OK);
         }
         log.error("Failed to update this object :" + documentData.getId());
         return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
@@ -123,7 +123,7 @@ public class DocumentController {
             // return 200 when is ok
             log.debug("document with id : " + document.getId() + " successfully created");
             documentData.setId(document.getId());
-            return new ResponseEntity<>(documentData , HttpStatus.OK);
+            return new ResponseEntity<>(documentData, HttpStatus.OK);
 
         }
         log.error("Failed to update this object :" + documentData.getId());
@@ -271,4 +271,14 @@ public class DocumentController {
         return new ResponseEntity<>(new ValidationError(lListError), HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteDocument(@PathVariable("id") Long id) {
+        if (id != null && id > 0) {
+            documentService.delete(id);
+            log.debug("Document with id : " + id + " is deleted");
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

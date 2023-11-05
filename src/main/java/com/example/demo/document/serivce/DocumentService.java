@@ -46,15 +46,12 @@ public class DocumentService {
     }
 
     public void delete(Long aId) {
-
         Optional<DocumentEntity> lOptionalDocumentEntity = lDocumentRepository.findById(aId);
-
         if (lOptionalDocumentEntity.isPresent()) {
             DocumentEntity lDocumentEntity = lOptionalDocumentEntity.get();
             lDocumentRepository.delete(lDocumentEntity);
         } else {
             log.error("Document with this id is nor present");
-            Optional.empty();
         }
 
     }
