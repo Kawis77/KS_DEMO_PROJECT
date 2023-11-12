@@ -16,8 +16,6 @@ public class MenuDocumentComponentEntity {
 
     private String description;
 
-
-
     public String getName() {
         return name;
     }
