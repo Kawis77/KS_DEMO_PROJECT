@@ -17,6 +17,7 @@ import com.example.demo.users.service.UserService;
 import com.example.demo.validation.ValidationError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Log4j2
@@ -280,5 +283,19 @@ public class DocumentController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/move/{id}")
+    public ResponseEntity<Object> moveDocument(@PathVariable("id") Long id) {
+        Map<MenuDocumentComponentEntity, List<DocumentEntity>> leftLocations = documentService.getDocumentForMoveOption(id).getFirst();
+        List<MenuDocumentComponentEntity> rightLocations = documentService.getDocumentForMoveOption(id).getSecond();
+        if (leftLocations.size() > 0 && rightLocations.size() > 0) {
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("documents", leftLocations);
+            responseMap.put("locations", rightLocations);
+            return new ResponseEntity<>(responseMap, HttpStatus.OK);
+        }
+        log.error("Map with location for move document is empty");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
