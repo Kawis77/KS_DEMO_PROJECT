@@ -5,6 +5,7 @@ import com.example.demo.document.dao.form.ExternalDocumentDataForm;
 import com.example.demo.document.dao.form.RegularDocumentDataForm;
 import com.example.demo.document.dao.repository.DocumentRepository;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
+import com.example.demo.menucomponent.dao.form.MenuDocumentComponentForm;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.StringUtils;
@@ -157,22 +158,41 @@ public class DocumentService {
         }
         return validationList;
     }
-    public Pair<Map<MenuDocumentComponentEntity, List<DocumentEntity>>,List<MenuDocumentComponentEntity>> getDocumentForMoveOption(Long id) {
-        List<Map<MenuDocumentComponentEntity, List<DocumentEntity>>> arrayWithMapLocations = new ArrayList<>();
-        Map<MenuDocumentComponentEntity, List<DocumentEntity>> leftDocuments = new HashMap<>();
-         List<MenuDocumentComponentEntity> rightDocuments = componentService.readAll();
-        DocumentEntity documentEntity = findDocumentById(id);
-        List<MenuDocumentComponentEntity> componentEntityList = componentService.readAll();
-        if (documentEntity != null) {
-            leftDocuments.put(documentEntity.getLocation(), Arrays.asList(documentEntity));
+
+    public Pair<List<MenuDocumentComponentForm>, List<MenuDocumentComponentForm>> getDocumentForMoveOption(Long id) {
+        MenuDocumentComponentForm menuComponentForm = new MenuDocumentComponentForm();
+
+        List<MenuDocumentComponentForm> rightDocuments = new ArrayList<>();
+        List<MenuDocumentComponentForm> leftDocuments = new ArrayList<>();
+        List<MenuDocumentComponentEntity> menuComponentList = componentService.readAll();
+        if (id != null && id > 0) {
+            DocumentEntity oneDocument = findDocumentById(id);
+            if (oneDocument != null) {
+                List<DocumentEntity> oneDocumentList = new ArrayList<>();
+                MenuDocumentComponentEntity menuDocumentEntity = oneDocument.getLocation();
+                menuComponentForm = componentService.mappedEntityToForm(menuDocumentEntity);
+                oneDocumentList.add(oneDocument);
+                menuComponentForm.setDocuments(oneDocumentList);
+                rightDocuments.add(menuComponentForm);
+            }
         } else {
-            for (MenuDocumentComponentEntity documentComponent : componentEntityList) {
-                List<DocumentEntity> documentsFromMenu = getAllWithMenuId(documentComponent.getId());
-                leftDocuments.put(documentComponent, documentsFromMenu);
+            for (MenuDocumentComponentEntity component : menuComponentList) {
+                menuComponentForm = componentService.mappedEntityToForm(component);
+                List<DocumentEntity> documentEntityList = getAllWithMenuId(component.getId());
+                if (documentEntityList != null) {
+                    menuComponentForm.setDocuments(documentEntityList);
+                }
+                rightDocuments.add(menuComponentForm);
             }
         }
-
-        return Pair.of(leftDocuments, rightDocuments);
+        //left
+        for (MenuDocumentComponentEntity component : menuComponentList) {
+            menuComponentForm = componentService.mappedEntityToForm(component);
+            List<DocumentEntity> documentEntityList = getAllWithMenuId(component.getId());
+            menuComponentForm.setDocuments(documentEntityList);
+            leftDocuments.add(menuComponentForm);
+        }
+        return Pair.of(rightDocuments, leftDocuments);
     }
 }
 

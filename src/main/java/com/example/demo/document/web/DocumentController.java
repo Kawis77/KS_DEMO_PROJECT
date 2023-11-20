@@ -11,6 +11,7 @@ import com.example.demo.document.serivce.ExternalDocumentService;
 import com.example.demo.document.serivce.RegularDocumentService;
 import com.example.demo.files.dao.FileConstants;
 import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
+import com.example.demo.menucomponent.dao.form.MenuDocumentComponentForm;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import com.example.demo.users.dao.entity.UserEntity;
 import com.example.demo.users.service.UserService;
@@ -287,8 +288,10 @@ public class DocumentController {
 
     @GetMapping("/move/{id}")
     public ResponseEntity<Object> moveDocument(@PathVariable("id") Long id) {
-        Map<MenuDocumentComponentEntity, List<DocumentEntity>> leftLocations = documentService.getDocumentForMoveOption(id).getFirst();
-        List<MenuDocumentComponentEntity> rightLocations = documentService.getDocumentForMoveOption(id).getSecond();
+
+        Pair<List<MenuDocumentComponentForm> , List<MenuDocumentComponentForm>> documents = documentService.getDocumentForMoveOption(id);
+        List<MenuDocumentComponentForm> leftLocations =documents.getFirst();
+        List<MenuDocumentComponentForm> rightLocations = documents.getSecond();
         if (leftLocations.size() > 0 && rightLocations.size() > 0) {
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("documents", leftLocations);
