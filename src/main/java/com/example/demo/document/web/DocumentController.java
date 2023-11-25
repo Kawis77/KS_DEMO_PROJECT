@@ -286,11 +286,11 @@ public class DocumentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/move/{id}")
-    public ResponseEntity<Object> moveDocument(@PathVariable("id") Long id) {
+    @GetMapping("/select/move/{id}")
+    public ResponseEntity<Object> selectDocumentForMove(@PathVariable("id") Long id) {
 
-        Pair<List<MenuDocumentComponentForm> , List<MenuDocumentComponentForm>> documents = documentService.getDocumentForMoveOption(id);
-        List<MenuDocumentComponentForm> leftLocations =documents.getFirst();
+        Pair<List<MenuDocumentComponentForm>, List<MenuDocumentComponentForm>> documents = documentService.getDocumentForMoveOption(id);
+        List<MenuDocumentComponentForm> leftLocations = documents.getFirst();
         List<MenuDocumentComponentForm> rightLocations = documents.getSecond();
         if (leftLocations.size() > 0 && rightLocations.size() > 0) {
             Map<String, Object> responseMap = new HashMap<>();
@@ -299,6 +299,16 @@ public class DocumentController {
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
         }
         log.error("Map with location for move document is empty");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/change/move/{documentId}/{componentId}")
+    public ResponseEntity<Object> moveDocument(@PathVariable("documentId") Long documentId, @PathVariable("componentId") Long componentId) {
+
+        boolean isMoved = documentService.changeLocationForDocument(documentId, componentId);
+        if (isMoved) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

@@ -8,14 +8,12 @@ import com.example.demo.menucomponent.dao.entity.MenuDocumentComponentEntity;
 import com.example.demo.menucomponent.dao.form.MenuDocumentComponentForm;
 import com.example.demo.menucomponent.service.MenuDocumentComponentService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import static com.example.demo.document.constans.DocumentConstants.*;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -124,7 +122,6 @@ public class DocumentService {
         } else if (name.contains(DOCUMENT_EXTENSION_TXT)) {
             contentType = DOCUMENT_CONTENT_TXT;
         }
-
         return contentType;
     }
 
@@ -193,6 +190,20 @@ public class DocumentService {
             leftDocuments.add(menuComponentForm);
         }
         return Pair.of(rightDocuments, leftDocuments);
+    }
+
+
+    public boolean changeLocationForDocument(Long documentId, Long componentId) {
+
+        if (documentId != null && componentId != null) {
+            MenuDocumentComponentEntity menuDocumentComponent = componentService.getMenuComponentById(componentId);
+            if (menuDocumentComponent != null) {
+                DocumentEntity document = findDocumentById(documentId);
+                document.setLocation(menuDocumentComponent);
+            }
+            return true;
+        }
+        return false;
     }
 }
 
