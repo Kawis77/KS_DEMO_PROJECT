@@ -25,6 +25,8 @@ public class DocumentEntity {
     private Integer type;
 
     private String publicationNote;
+    @Column(name = "folder_id" )
+    private Long folder;
 
     @Column(columnDefinition = "LONGTEXT")
     private String content;
@@ -153,5 +155,13 @@ public class DocumentEntity {
     }
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Long folder) {
+        this.folder = folder;
     }
 }

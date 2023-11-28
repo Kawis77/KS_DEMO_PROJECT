@@ -41,9 +41,9 @@ import java.util.Map;
 public class DocumentController {
 
     @Autowired
-    private final DocumentService documentService;
+    private DocumentService documentService;
     @Autowired
-    private final RegularDocumentService regularDocumentService;
+    private RegularDocumentService regularDocumentService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -53,11 +53,6 @@ public class DocumentController {
     @Autowired
     private ExternalDocumentService externalDocumentService;
 
-
-    public DocumentController(DocumentService documentService, RegularDocumentService regularDocumentService) {
-        this.documentService = documentService;
-        this.regularDocumentService = regularDocumentService;
-    }
 
     @PostMapping("/regular/create")
     public ResponseEntity<Object> createRegularDocument(@RequestBody RegularDocumentDataForm documentData) {
@@ -85,6 +80,7 @@ public class DocumentController {
             document.setVersion(Integer.parseInt(documentData.getVersion()));
             document.setPublicationNote(documentData.getPublicationNote());
             document.setType(REGULAR_DOC_DOCUMENT);
+            document.setFolder(documentData.getFolderId());
 
             documentService.create(document);
             // return 200 when is ok
@@ -122,6 +118,7 @@ public class DocumentController {
             document.setVersion(Integer.parseInt(documentData.getVersion()));
             document.setPublicationNote(documentData.getPublicationNote());
             document.setType(EXTERNAL_DOC_DOCUMENT);
+            document.setFolder(documentData.getFolderId());
 
             documentService.create(document);
             // return 200 when is ok
@@ -192,9 +189,7 @@ public class DocumentController {
                 //check content of document
                 String contentType = documentService.getContentDocumentType(name);
                 if (contentType != null) {
-                    return ResponseEntity.ok()
-                            .contentType(MediaType.parseMediaType(contentType))
-                            .body(fileBytes);
+                    return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(fileBytes);
 
                 }
             }
@@ -289,8 +284,8 @@ public class DocumentController {
     @GetMapping("/move/{id}")
     public ResponseEntity<Object> moveDocument(@PathVariable("id") Long id) {
 
-        Pair<List<MenuDocumentComponentForm> , List<MenuDocumentComponentForm>> documents = documentService.getDocumentForMoveOption(id);
-        List<MenuDocumentComponentForm> leftLocations =documents.getFirst();
+        Pair<List<MenuDocumentComponentForm>, List<MenuDocumentComponentForm>> documents = documentService.getDocumentForMoveOption(id);
+        List<MenuDocumentComponentForm> leftLocations = documents.getFirst();
         List<MenuDocumentComponentForm> rightLocations = documents.getSecond();
         if (leftLocations.size() > 0 && rightLocations.size() > 0) {
             Map<String, Object> responseMap = new HashMap<>();
